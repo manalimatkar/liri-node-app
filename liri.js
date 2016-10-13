@@ -1,5 +1,6 @@
 //Include keys.js 
 var keysNeeded = require('./keys.js');
+var request = require('request');
 
 var searchValue = "";
 var actionToDo = "";
@@ -29,17 +30,18 @@ if(nodeArgs.length > 2){
 		//construct the string from the argument
 		for(i=0; i < nodeArgs.length-3;i++){
 		searchValue = searchValue + process.argv[i+3] + " ";
-		// console.log("Multiple Word search value ::" + searchValue);
+		 
 	    }
 	}else{
-		searchValue = nodeArgs[3];
-		// console.log("One Word search value ::" + searchValue);
+		searchValue = nodeArgs[3];		
 	}	
 	// console.log("todo::::" + actionToDo + "Search For:::" + searchValue);
 }else{
-	actionToDo = nodeArgs[2];
-	// console.log("todo::::" + actionToDo);
+	actionToDo = nodeArgs[2];	
 }
+
+console.log("todo::::" + actionToDo);
+console.log("search value ::" + searchValue);
 
 //Select the action to perform based on the actiontodo value
 
@@ -61,7 +63,27 @@ if (actionToDo == "my-tweets"){
 	if(searchValue == ""){
 		console.log("Inside movie action execution command with no searchValue");
 	}else{
+
 		console.log("Inside movie action execution command with searchValue");
+
+		// Then run a request to the OMDB API with the movie specified
+		request("http://www.omdbapi.com/?t="+ searchValue +"&y=&plot=short&tomatoes=true&r=json", function (error, response, body) {
+
+			// If the request is successful (i.e. if the response status code is 200)
+			if (!error && response.statusCode == 200) {				
+				// Parse the body of the site and recover just the imdbRating
+				// (Note: The syntax below for parsing isn't obvious. Just spend a few moments dissecting it). 
+				console.log("Movie Name:: " + JSON.parse(body)["Title"] + "\n" +
+						"Year Of Release :: " + JSON.parse(body)["Year"] + "\n" +
+						"IMDB Rating :: " + JSON.parse(body)["imdbRating"] + "\n" +
+						"Country Movie Was Produced :: " + JSON.parse(body)["Country"] + "\n" +
+						"Language :: " + JSON.parse(body)["Language"] + "\n" +
+						"Plot Of Movie :: " + JSON.parse(body)["Plot"] + "\n" +
+						"Actors in the movie :: " + JSON.parse(body)["Actors"] + "\n" +
+						"Rotten Tomatoes Rating :: " + JSON.parse(body)["tomatoRating"] + "\n" +
+						"Rotten Tomatoes URL :: " + JSON.parse(body)["tomatoURL"]);
+			}
+		});
 	}
 
 }else if (actionToDo == "do-what-it-says"){
