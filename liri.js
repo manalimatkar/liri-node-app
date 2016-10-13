@@ -51,7 +51,7 @@ if (actionToDo == "my-tweets"){
 
 }else if(actionToDo == "spotify-this-song"){
 
-	if(searchValue == ""){
+	if(searchValue == undefined){
 
 		console.log("Inside spotify action execution command with no searchValue");
 	}else{
@@ -60,13 +60,37 @@ if (actionToDo == "my-tweets"){
 
 }else if(actionToDo == "movie-this"){
 
-	if(searchValue == ""){
-		console.log("Inside movie action execution command with no searchValue");
+	if(searchValue == undefined){
+
+		 	searchValue = "Mr Nobody";
+
+		 	console.log("INSIDE FINDMOVIE NOBODY :::"+ searchValue);
+
+		 	findMovieInfo();
+			console.log("If you haven't watched 'Mr. Nobody', then you should: http://www.imdb.com/title/tt0485947/" + 
+				"\n" + "It's on Netflix!");
 	}else{
+			console.log("Inside movie action execution command with searchValue");
+			findMovieInfo();
+					
+	}
 
-		console.log("Inside movie action execution command with searchValue");
+}else if (actionToDo == "do-what-it-says"){
 
-		// Then run a request to the OMDB API with the movie specified
+	if(searchValue == undefined){
+		console.log("Inside do do-what-it-says action execution command with no searchValue");
+	}else{
+		console.log("Inside do-what-it-says action execution command with searchValue");
+	}
+
+}else {
+
+	console.log("Please enter a command");
+}
+
+function findMovieInfo(){
+	console.log("INSIDE FINDMOVIE :::"+ searchValue);
+	// Then run a request to the OMDB API with the movie specified
 		request("http://www.omdbapi.com/?t="+ searchValue +"&y=&plot=short&tomatoes=true&r=json", function (error, response, body) {
 
 			// If the request is successful (i.e. if the response status code is 200)
@@ -84,17 +108,5 @@ if (actionToDo == "my-tweets"){
 						"Rotten Tomatoes URL :: " + JSON.parse(body)["tomatoURL"]);
 			}
 		});
-	}
 
-}else if (actionToDo == "do-what-it-says"){
-
-	if(searchValue == ""){
-		console.log("Inside do do-what-it-says action execution command with no searchValue");
-	}else{
-		console.log("Inside do-what-it-says action execution command with searchValue");
-	}
-
-}else {
-
-	console.log("Please enter a command");
 }
