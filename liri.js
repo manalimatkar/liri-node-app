@@ -1,6 +1,9 @@
 //Include keys.js 
 var keysNeeded = require('./keys.js');
 var request = require('request');
+var spotify = require('spotify');
+var fs = require("fs");
+
 
 var searchValue = "";
 var actionToDo = "";
@@ -55,33 +58,35 @@ if (actionToDo == "my-tweets"){
 
 		console.log("Inside spotify action execution command with no searchValue");
 	}else{
-		console.log("Inside spotify action execution command with searchValue");
+
+		findSongInfo();
+		
 	}
 
 }else if(actionToDo == "movie-this"){
 
 	if(searchValue == undefined){
 
-		 	searchValue = "Mr Nobody";
-
-		 	console.log("INSIDE FINDMOVIE NOBODY :::"+ searchValue);
-
+		 	searchValue = "Mr Nobody";		 	
 		 	findMovieInfo();
 			console.log("If you haven't watched 'Mr. Nobody', then you should: http://www.imdb.com/title/tt0485947/" + 
 				"\n" + "It's on Netflix!");
 	}else{
-			console.log("Inside movie action execution command with searchValue");
-			findMovieInfo();
-					
+			
+			findMovieInfo();					
 	}
 
 }else if (actionToDo == "do-what-it-says"){
 
-	if(searchValue == undefined){
-		console.log("Inside do do-what-it-says action execution command with no searchValue");
-	}else{
-		console.log("Inside do-what-it-says action execution command with searchValue");
-	}
+		fs.readFile("random.txt", "utf-8", function(err,data){
+
+			var dataReturned = data.split(",");
+
+			for (var i = dataReturned.length - 1; i >= 0; i--) {
+				console.log(dataReturned[i]);
+			}
+
+		});
 
 }else {
 
@@ -109,4 +114,22 @@ function findMovieInfo(){
 			}
 		});
 
+}
+
+function findSongInfo(){
+
+	console.log("INSIDE FINDSONG :::"+ searchValue);
+	spotify.search({ type: 'track', query: searchValue }, function(err, data) {
+	    if ( err ) {
+	        console.log('Error occurred: ' + err);
+	        return;
+	    }else{
+	    	var songInfo = data.tracks.items[0];
+		    console.log("NAME:::" + songInfo.artists[0].name);
+		    console.log("Song Name:::" + songInfo.name);
+		    console.log("AlbumName :::" + songInfo.album.name);
+		    console.log("Song Preview URL"+ songInfo.preview_url);
+		    
+	    }
+	});
 }
