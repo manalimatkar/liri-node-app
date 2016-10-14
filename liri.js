@@ -1,15 +1,13 @@
-//Include keys.js 
+//Include required packages
 var keysNeeded = require('./keys.js');
 var request = require('request');
 var spotify = require('spotify');
 var Twitter = require('twitter');
 var fs = require("fs");
 
-
+//Set global variables
 var searchValue = "";
 var actionToDo = "";
-
-//console.log(keysNeeded);
 
 //Get Keys and store it in variables
 
@@ -17,7 +15,7 @@ var consumer_key_twr = keysNeeded.twitterKeys.consumer_key;
 var consumer_secret_twr = keysNeeded.twitterKeys.consumer_secret;
 var access_token_key_twr = keysNeeded.twitterKeys.access_token_key;
 var access_token_secret_twr = keysNeeded.twitterKeys.access_token_secret;
-
+//Create Twitter Client
 var clientM = new Twitter({
   consumer_key: consumer_key_twr,
   consumer_secret: consumer_secret_twr,
@@ -25,14 +23,10 @@ var clientM = new Twitter({
   access_token_secret: access_token_secret_twr
 });
 
-
 // Take in the command line arguments
 var nodeArgs = process.argv;
 
-// console.log(nodeArgs);
-
-//If length of arguments is more then three assign both values else assign todo
-
+//Set values for actionToDo and searchValue based on the number of arguments passed
 if(nodeArgs.length > 2){
 	actionToDo = nodeArgs[2];
 	//check if the search value is one word or more than one word
@@ -44,7 +38,6 @@ if(nodeArgs.length > 2){
 	}else{
 		searchValue = nodeArgs[3];		
 	}	
-	// console.log("todo::::" + actionToDo + "Search For:::" + searchValue);
 }else{
 	actionToDo = nodeArgs[2];	
 }
@@ -55,9 +48,7 @@ console.log("search value ::" + searchValue);
 //Select the action to perform based on the actiontodo value
 
 if (actionToDo == "my-tweets"){
-	
-		console.log("Inside my tweets action execution command");	
-
+//Tweets Starts
 		var params = {screen_name: 'matsey_man'};
 		clientM.get('statuses/user_timeline', params, function(error, tweets, response) {
 		  if (!error) {
@@ -69,18 +60,18 @@ if (actionToDo == "my-tweets"){
 		  	}
 		  	
 		});
-
+//Tweets Ends
 }else if(actionToDo == "spotify-this-song"){
-
+//spotify starts
 	if(searchValue == undefined){
 		searchValue = "The Sign";
 		findSongInfo();		
 	}else{
 		findSongInfo();		
 	}
-
+//spotify ends
 }else if(actionToDo == "movie-this"){
-
+// movie search starts
 	if(searchValue == undefined){
 		 	searchValue = "Mr Nobody";		 	
 		 	findMovieInfo();
@@ -89,13 +80,14 @@ if (actionToDo == "my-tweets"){
 	}else{			
 			findMovieInfo();					
 	}
-
+//movie search ends
 }else if (actionToDo == "do-what-it-says"){
-
+// do what it says starts
+		//Read the file
 		fs.readFile("random.txt", "utf-8", function(err,data){
 
 			var dataReturned = data.split(",");
-
+			//split text and store values in action todo and search value
 			for (var j = 0; j < dataReturned.length ;) {
 				console.log(dataReturned[j]);
 
@@ -115,7 +107,7 @@ if (actionToDo == "my-tweets"){
 			}
 
 		});
-
+//do what t says ends
 }else {
 
 	console.log("Please enter a command");
