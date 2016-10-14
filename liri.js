@@ -2,6 +2,7 @@
 var keysNeeded = require('./keys.js');
 var request = require('request');
 var spotify = require('spotify');
+var Twitter = require('twitter');
 var fs = require("fs");
 
 
@@ -17,6 +18,12 @@ var consumer_secret_twr = keysNeeded.twitterKeys.consumer_secret;
 var access_token_key_twr = keysNeeded.twitterKeys.access_token_key;
 var access_token_secret_twr = keysNeeded.twitterKeys.access_token_secret;
 
+var clientM = new Twitter({
+  consumer_key: consumer_key_twr,
+  consumer_secret: consumer_secret_twr,
+  access_token_key: access_token_key_twr,
+  access_token_secret: access_token_secret_twr
+});
 
 
 // Take in the command line arguments
@@ -32,8 +39,7 @@ if(nodeArgs.length > 2){
 	if(nodeArgs.length > 4){
 		//construct the string from the argument
 		for(i=0; i < nodeArgs.length-3;i++){
-		searchValue = searchValue + process.argv[i+3] + " ";
-		 
+			searchValue = searchValue + process.argv[i+3] + " ";		 
 	    }
 	}else{
 		searchValue = nodeArgs[3];		
@@ -52,27 +58,35 @@ if (actionToDo == "my-tweets"){
 	
 		console.log("Inside my tweets action execution command");	
 
+		var params = {screen_name: 'matsey_man'};
+		clientM.get('statuses/user_timeline', params, function(error, tweets, response) {
+		  if (!error) {
+		  	for (var i = tweets.length - 1; i >= 0; i--) {
+		  		console.log("-----------------------------------------------");
+			    console.log(tweets[i].text);
+			    console.log("-----------------------------------------------");
+			  }
+		  	}
+		  	
+		});
+
 }else if(actionToDo == "spotify-this-song"){
 
 	if(searchValue == undefined){
-
-		console.log("Inside spotify action execution command with no searchValue");
+		searchValue = "The Sign";
+		findSongInfo();		
 	}else{
-
-		findSongInfo();
-		
+		findSongInfo();		
 	}
 
 }else if(actionToDo == "movie-this"){
 
 	if(searchValue == undefined){
-
 		 	searchValue = "Mr Nobody";		 	
 		 	findMovieInfo();
 			console.log("If you haven't watched 'Mr. Nobody', then you should: http://www.imdb.com/title/tt0485947/" + 
 				"\n" + "It's on Netflix!");
-	}else{
-			
+	}else{			
 			findMovieInfo();					
 	}
 
@@ -82,8 +96,22 @@ if (actionToDo == "my-tweets"){
 
 			var dataReturned = data.split(",");
 
-			for (var i = dataReturned.length - 1; i >= 0; i--) {
-				console.log(dataReturned[i]);
+			for (var j = 0; j < dataReturned.length ;) {
+				console.log(dataReturned[j]);
+
+				actionToDo = dataReturned[j];
+				searchValue = dataReturned[j+1];
+
+				if (actionToDo == "spotify-this-song") {
+					if (searchValue != undefined) {
+						findSongInfo();
+					}else{
+						searchValue = "The Sign";
+						findSongInfo();
+					}
+				}
+
+				j=j+2;
 			}
 
 		});
