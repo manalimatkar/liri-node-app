@@ -101,6 +101,25 @@ if (actionToDo == "my-tweets"){
 						searchValue = "The Sign";
 						findSongInfo();
 					}
+				} else if (actionToDo == "movie-this") {
+					if (searchValue != undefined) {
+						findMovieInfo();
+					}else{
+						searchValue = "Mr Nobody";
+						findMovieInfo();
+					}
+				}else if (actionToDo == "my-tweets") {
+					var params = {screen_name: 'matsey_man'};
+					clientM.get('statuses/user_timeline', params, function(error, tweets, response) {
+					  if (!error) {
+					  	for (var i = tweets.length - 1; i >= 0; i--) {
+					  		console.log("-----------------------------------------------");
+						    console.log(tweets[i].text);
+						    console.log("-----------------------------------------------");
+						  }
+					  	}
+					  	
+					});
 				}
 
 				j=j+2;
