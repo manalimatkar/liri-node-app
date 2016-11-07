@@ -9,12 +9,12 @@ var fs = require("fs");
 var searchValue = "";
 var actionToDo = "";
 
-//Get Keys and store it in variables
-
+//Get Keys for user access and store it in variables
 var consumer_key_twr = keysNeeded.twitterKeys.consumer_key;
 var consumer_secret_twr = keysNeeded.twitterKeys.consumer_secret;
 var access_token_key_twr = keysNeeded.twitterKeys.access_token_key;
 var access_token_secret_twr = keysNeeded.twitterKeys.access_token_secret;
+
 //Create Twitter Client
 var clientM = new Twitter({
   consumer_key: consumer_key_twr,
@@ -31,11 +31,12 @@ if(nodeArgs.length > 2){
 	actionToDo = nodeArgs[2];
 	//check if the search value is one word or more than one word
 	if(nodeArgs.length > 4){
-		//construct the string from the argument
-		for(i=0; i < nodeArgs.length-3;i++){
+		//construct the string from the argument for multiword value
+		for(i=0; i < nodeArgs.length - 3; i++){
 			searchValue = searchValue + process.argv[i+3] + " ";		 
 	    }
 	}else{
+		// set the word at index 3 as searchValue
 		searchValue = nodeArgs[3];		
 	}	
 }else{
@@ -48,7 +49,8 @@ console.log("search value ::" + searchValue);
 //Select the action to perform based on the actiontodo value
 
 if (actionToDo == "my-tweets"){
-//Tweets Starts
+//Tweets Starts 
+// Login user and get the latest tweets from dashboard using the API call
 		var params = {screen_name: 'matsey_man'};
 		clientM.get('statuses/user_timeline', params, function(error, tweets, response) {
 		  if (!error) {
